@@ -26,13 +26,33 @@ app.get("/api/hello", function (req, res) {
 
 // timestamp endpoint
 app.get('/api/:date?', (req, res) => {
-  const unixTimestamp = req.params.date;
-  const utcTime = new Date(Number(unixTimestamp)).toUTCString()
-  console.log(unixTimestamp, utcTime)
-  res.json({
-    'unix': Number(req.params.date),
-    'utc': utcTime
-  })
+  const date_string = req.params.date;
+  const utcTime = new Date(Number(date_string)).toUTCString()
+  console.log(date_string, utcTime, new Date())
+  // if date parameter is empty
+  if (date_string == undefined) {
+    res.json({
+      'unix': new Date().getTime(),
+      'utc': new Date().toUTCString()
+    })
+  } 
+  // if an invalid date paramter is provided
+  else if (utcTime == 'Invalid Date') {
+    res.json({
+      'error': 'Invalid Date'
+    })
+  } 
+  // if a valid date is provided
+  else if (date_string) {
+    res.json({})
+  } 
+  // if a unix timestamp is provided
+  else {
+    res.json({
+      'unix': Number(req.params.date),
+      'utc': utcTime
+    })
+  }
 })
 
 // Listen on port set in environment variable or default to 3000
