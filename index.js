@@ -28,23 +28,31 @@ app.get("/api/hello", function (req, res) {
 app.get('/api/:date?', (req, res) => {
   const date_string = req.params.date;
   const utcTime = new Date(Number(date_string)).toUTCString()
+  //checks if the date entered in yyyy-mm-dd format is valid
+  const validDate = Date.parse(date_string)
   console.log(date_string, utcTime, new Date())
   // if date parameter is empty
   if (date_string == undefined) {
     res.json({
       'unix': new Date().getTime(),
+      //cannot use utcTime variable 
+      //It takes the unix timestamp to convert to UTC time
+      //not the format in yyyy-mm-dd
       'utc': new Date().toUTCString()
     })
   } 
   // if an invalid date paramter is provided
+  else if (validDate) {
+    res.json({
+      'unix': new Date(date_string).getTime(),
+      'utc': new Date(date_string).toUTCString()
+    })
+  } 
+  // if a valid date is provided
   else if (utcTime == 'Invalid Date') {
     res.json({
       'error': 'Invalid Date'
     })
-  } 
-  // if a valid date is provided
-  else if (date_string) {
-    res.json({})
   } 
   // if a unix timestamp is provided
   else {
